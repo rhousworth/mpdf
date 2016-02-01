@@ -831,7 +831,9 @@ class mPDF
 	var $outerblocktags;
 	var $innerblocktags;
 
-	// **********************************
+    var $pageDescriptions = []; //Page descriptions, indexed by page number
+
+    // **********************************
 	// **********************************
 	// **********************************
 	// **********************************
@@ -9526,6 +9528,13 @@ class mPDF
 				$html = str_replace($this->aliasNbPg, $nb, $html); // {nb}
 				$html = preg_replace_callback('/\{DATE\s+(.*?)\}/', array($this, 'date_callback'), $html); // mPDF 5.7
 
+				//Replace PAGEDESC placeholder with page description, if set.
+				if (count($this->pageDescriptions)) {
+		            $pdesc = isset($this->pageDescriptions[$pn]) ? $this->pageDescriptions[$pn] : end($this->pageDescriptions);
+		            $html  = str_replace('{PAGEDESC}', $pdesc, $html);
+		        }
+
+
 				$this->HTMLheaderPageLinks = array();
 				$this->HTMLheaderPageAnnots = array();
 				$this->HTMLheaderPageForms = array();
@@ -9601,6 +9610,12 @@ class mPDF
 				$html = str_replace($this->aliasNbPgGp, $pntstr, $html); // {nbpg}
 				$html = str_replace($this->aliasNbPg, $nb, $html); // {nb}
 				$html = preg_replace_callback('/\{DATE\s+(.*?)\}/', array($this, 'date_callback'), $html); // mPDF 5.7
+
+				//Replace PAGEDESC placeholder with page description, if set.
+				if (count($this->pageDescriptions)) {
+		            $pdesc = isset($this->pageDescriptions[$pn]) ? $this->pageDescriptions[$pn] : end($this->pageDescriptions);
+		            $html  = str_replace('{PAGEDESC}', $pdesc, $html);
+		        }
 
 
 				$this->HTMLheaderPageLinks = array();
@@ -15091,6 +15106,13 @@ class mPDF
 		$html = str_replace($this->aliasNbPgGp, $this->nbpgPrefix . $this->docPageNumTotal($this->page) . $this->nbpgSuffix, $html);
 		$html = str_replace($this->aliasNbPg, $this->page, $html);
 		$html = preg_replace_callback('/\{DATE\s+(.*?)\}/', array($this, 'date_callback'), $html); // mPDF 5.7
+
+		//Replace PAGEDESC placeholder with page description, if set.
+		if (count($this->pageDescriptions)) {
+            $pdesc = isset($this->pageDescriptions[$pn]) ? $this->pageDescriptions[$pn] : end($this->pageDescriptions);
+            $html  = str_replace('{PAGEDESC}', $pdesc, $html);
+        }
+
 		$this->HTMLheaderPageLinks = array();
 		$this->HTMLheaderPageAnnots = array();
 		$this->HTMLheaderPageForms = array();
